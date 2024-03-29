@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Outlet } from 'react-router-dom';
 // import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
-export default function Search({ children }) {
+export default function Search() {
   const [ticker, setTicker] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -113,7 +114,7 @@ export default function Search({ children }) {
           </ul>
         </div>
       </div>
-      {children}
+      <Outlet />
     </>
   );
 }
