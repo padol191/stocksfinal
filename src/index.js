@@ -24,9 +24,8 @@ root.render(
    
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-    <CustomNavbar>
+    <CustomNavbar />
     <Search />
-    </CustomNavbar>
     </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>
