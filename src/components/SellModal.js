@@ -2,10 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import { toast} from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-const SellModal = ({ show, onHide, stock, updatePortfolioData }) => {
+const SellModal = ({ show, onHide, stock, triggerAlert }) => {
   const modalRef = useRef(null);
   const [balance, setBalance] = useState(null);
   const [quantity, setQuantity] = useState(200); // Initial quantity value
+
+  const handleAlert = (message) => {
+    // Call the function passed from the parent component to trigger the alert
+    triggerAlert(message);
+  };
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -51,10 +56,10 @@ const SellModal = ({ show, onHide, stock, updatePortfolioData }) => {
       }
 
       // Display success toast
-      toast.info('Stock sold successfully!');
-
+      
       // Close the modal after successful sale
       onHide();
+      handleAlert('Stock sold successfully')
 
       // Update portfolio data
     } catch (error) {

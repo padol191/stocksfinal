@@ -3,7 +3,11 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import StockModal from "./components/StockModal";
 import SellModal from "./components/SellModal";
 import { toast } from "react-toastify";
+import { Alert } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+
 async function fetchPortfolioData() {
+ 
   const response = await fetch('http://localhost:5000/portfolio');
   return response.json();
 }
@@ -21,7 +25,22 @@ async function fetchPrices(data) {
   return data;
 }
 
-const PortfolioPage = () => {
+const PortfolioPage = () => { 
+  const router = useNavigate()
+
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+
+  const handleAlert = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+
+    setTimeout(() => {
+      setShowAlert(false);
+      router(0)
+    }, 3000);
+  };
+
     const [stocktochange,setstockchange] = useState()
     const [showModal, setShowModal] = useState(false);
     const handleShowModal = () => setShowModal(true);
@@ -55,8 +74,13 @@ const PortfolioPage = () => {
 
   return (
     <div className="container col-lg-8" style={{ marginTop: '5rem' }}>
+        {showAlert && (
+        <div className="alert alert-success" role="alert">
+          {alertMessage}
+        </div>
+      )}
       <h3>My Portfolio</h3>
-
+      
           {portfolioData.map((stock, index) => (
       <div key={index} className="row justify-content-center mb-3">
         <div className="row border" style={{ backgroundColor: 'whitesmoke' }}>
@@ -122,16 +146,19 @@ const PortfolioPage = () => {
             <button style={{ backgroundColor: 'red', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }} onClick={()=>{setstocksell(stock);handleShowsellModal()}}>Sell</button>
           </div>
         </div>
+
         <StockModal
         show={showModal}
         onHide={handleHideModal}
         stock={stocktochange}
+        triggerAlert={handleAlert}
       />
                 
         <SellModal
         show={showsellModal}
         onHide={handleHidesellModal}
         stock={stocktosell}
+        triggerAlert={handleAlert}
       />
       </div>
     ))}
