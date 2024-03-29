@@ -650,7 +650,7 @@ app.post('/sell', async (req, res) => {
 
       // If all stocks of a symbol are sold, remove it from portfolio
       if (parseFloat(existingStock.quantity) === 0) {
-          await existingStock.remove();
+          await existingStock.deleteOne()
       } else {
           await existingStock.save();
       }

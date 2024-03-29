@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const StockModal = ({ show, onHide, stock, updatePortfolioData }) => {
+const SellModal = ({ show, onHide, stock, updatePortfolioData }) => {
   const modalRef = useRef(null);
   const [balance, setBalance] = useState(null);
-  const [quantity, setQuantity] = useState(0); // Initial quantity value
+  const [quantity, setQuantity] = useState(200); // Initial quantity value
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -16,7 +16,6 @@ const StockModal = ({ show, onHide, stock, updatePortfolioData }) => {
         }
         const data = await response.json();
         setBalance(data.balance);
-        console.log(balance)
       } catch (error) {
         console.error('Error fetching balance:', error);
       }
@@ -29,16 +28,16 @@ const StockModal = ({ show, onHide, stock, updatePortfolioData }) => {
     setQuantity(event.target.value);
   };
 
-  const handleBuy = async () => {
+  const handleSell = async () => {
     try {
       const payload = {
         symbol: stock.symbol,
-        price: stock.latestPrice.c,
+        currentPrice: stock.latestPrice.c,
         name: stock.name,
         quantity: quantity
       };
-      console.log(payload)
-      const response = await fetch('http://localhost:5000/buy', {
+
+      const response = await fetch('http://localhost:5000/sell', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -47,18 +46,19 @@ const StockModal = ({ show, onHide, stock, updatePortfolioData }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to buy stock');
+        throw new Error('Failed to sell stock');
       }
 
       // Display success toast
-      toast.success('Stock purchased successfully!');
+      toast.success('Stock sold successfully!');
 
-      // Close the modal after successful purchase
+      // Close the modal after successful sale
       onHide();
 
       // Update portfolio data
+      updatePortfolioData();
     } catch (error) {
-      console.error('Error buying stock:', error);
+      console.error('Error selling stock:', error);
     }
   };
 
@@ -88,7 +88,7 @@ const StockModal = ({ show, onHide, stock, updatePortfolioData }) => {
               </div>
               <div className="modal-body">
                 <p>Current Price: {stock.latestPrice.c}</p>
-                <p>Money in Wallet: {parseFloat(balance)}</p>
+                <p>Money in Wallet: {balance}</p>
                 <div className="form-group">
                   <label htmlFor="quantity">Quantity:</label>
                   <input
@@ -99,8 +99,8 @@ const StockModal = ({ show, onHide, stock, updatePortfolioData }) => {
                     onChange={handleQuantityChange}
                   />
                 </div>
-                {balance < stock.latestPrice.c * quantity && (
-                  <p>Not enough money in wallet!</p>
+                {stock.quantity < quantity && (
+                  <p>Not enough stocks in portfolio!</p>
                 )}
                 <p>Total: {stock.latestPrice.c * quantity}</p>
               </div>
@@ -108,9 +108,9 @@ const StockModal = ({ show, onHide, stock, updatePortfolioData }) => {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={handleBuy} // Call handleBuy function on button click
+                  onClick={handleSell} // Call handleSell function on button click
                 >
-                  Buy
+                  Sell
                 </button>
               </div>
             </div>
@@ -121,4 +121,4 @@ const StockModal = ({ show, onHide, stock, updatePortfolioData }) => {
   );
 };
 
-export default StockModal;
+export default SellModal;

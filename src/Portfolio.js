@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
+import StockModal from "./components/StockModal";
+import SellModal from "./components/SellModal";
 
 async function fetchPortfolioData() {
   const response = await fetch('http://localhost:5000/portfolio');
@@ -20,6 +22,14 @@ async function fetchPrices(data) {
 }
 
 const PortfolioPage = () => {
+    const [stocktochange,setstockchange] = useState()
+    const [showModal, setShowModal] = useState(false);
+    const handleShowModal = () => setShowModal(true);
+    const handleHideModal = () => setShowModal(false);
+    const [stocktosell,setstocksell] = useState()
+    const [showsellModal, setShowsellModal] = useState(false);
+    const handleShowsellModal = () => setShowsellModal(true);
+    const handleHidesellModal = () => setShowsellModal(false);
   const [portfolioData, setPortfolioData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -108,10 +118,21 @@ const PortfolioPage = () => {
         </div>
         <div className="row justify-content-start pb-1 border" style={{ backgroundColor: 'whitesmoke' }}>
           <div>
-            <button style={{ backgroundColor: 'green', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }}>Buy</button>
-            <button style={{ backgroundColor: 'red', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }}>Sell</button>
+            <button style={{ backgroundColor: 'green', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }} onClick={()=>{setstockchange(stock);handleShowModal()}}>Buy</button>
+            <button style={{ backgroundColor: 'red', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }} onClick={()=>{setstocksell(stock);handleShowsellModal()}}>Sell</button>
           </div>
         </div>
+        <StockModal
+        show={showModal}
+        onHide={handleHideModal}
+        stock={stocktochange}
+      />
+                
+        <SellModal
+        show={showsellModal}
+        onHide={handleHidesellModal}
+        stock={stocktosell}
+      />
       </div>
     ))}
         
