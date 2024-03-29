@@ -148,7 +148,7 @@ export default function Stock() {
         { ready ?
 
         <div className='container m-auto'>
-            {/* <StockInfoHeader data={companyData} stock={ticker} watchlistData={watchlistData} /> */}
+            <StockInfoHeader data={companyData} stock={ticker} watchlistData={watchlistData} />
             {/* For small screens */}
             <div className="d-sm-none">
                 <div className="row">

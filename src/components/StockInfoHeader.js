@@ -25,9 +25,11 @@ async function marketOpen(lastPriceUpdate) {
 }
 
 
-const StockInfoHeader = async ({data, stock, watchlistData}) => {
+const StockInfoHeader = ({data, watchlistData}) => {
   console.log('Data', data)
-  console.log('stock', stock)
+  let arraydata = [data]
+  console.log(arraydata)
+  // console.log('stock', stock)
   console.log('watchlist', watchlistData)
   const [ready, setReady] = useState(false)
   const [showModal, setShowModal] = useState(false);
@@ -40,16 +42,16 @@ const StockInfoHeader = async ({data, stock, watchlistData}) => {
 
   useEffect(() => {
       const fetchData = async () => {
-      const latestPriceData = await fetchLatestPrice(stock)
+      const latestPriceData = await fetchLatestPrice(data.ticker)
       // setLatestPrice(latestPriceData)
       const isMarketOpenData = await marketOpen(latestPriceData.t)
       setIsMarketOpen(isMarketOpenData)
-      const isStock = await watchlistData.some(data => data.symbol === stock);
+      const isStock = await watchlistData.some(data => data.symbol === data.ticker);
       setIsStockInWatchlist(isStock)
       setReady(true)
     }
     fetchData()
-  }, [stock, watchlistData])
+  }, [watchlistData])
 
   // Check if the stock is in watchlistData
 
@@ -57,28 +59,30 @@ const StockInfoHeader = async ({data, stock, watchlistData}) => {
     <>
     { ready ? 
     <>
+    { arraydata.map((item, index) => (
       <div className="container row justify-content-center align-items-start mx-auto my-4">
         <div className="col-4 col-3-sm  p-1-sm text-center">
-          <h4>{data.ticker}<span><FontAwesomeIcon icon={faStar} style={{ color: isStockInWatchlist ? 'yellow' : 'inherit' }}></FontAwesomeIcon></span></h4>
-          <h5>{data.name}</h5>
-          <p>{data.exchange}</p>
+          <h4>{item.ticker}<span><FontAwesomeIcon icon={faStar} style={{ color: isStockInWatchlist ? 'yellow' : 'inherit' }}></FontAwesomeIcon></span></h4>
+          <h5>{item.name}</h5>
+          <p>{item.exchange}</p>
           <div className="row justify-content-center align-items-center">
             <button className="col-lg-2 col-sm-2" style={{ backgroundColor: 'green', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }} onClick={handleShowModal}>Buy</button>
             <button className="col-lg-2 col-sm-2" style={{ backgroundColor: 'red', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }}>Sell</button>
           </div>
         </div>
         <div className="col-4 col-3-sm p-1-sm text-center">
-          <img src={data.logo} width={100} height={100} alt="Company Logo" />
+          <img src={item.logo} width={100} height={100} alt="Company Logo" />
         </div>
         <div className="col-4 col-3-sm p-1-sm text-center">
-          <LatestPrice stock={data.ticker}></LatestPrice>
+          {/* <LatestPrice stock={item.ticker}></LatestPrice> */}
         </div>
       </div>
+))}
       <div className="text-center" style={{color: isMarketOpen.color}}>{isMarketOpen.text}</div>
       <StockModal
         show={showModal}
         onHide={handleHideModal}
-        stock={stock}
+        stock={data}
       /> 
       </> : <LoadingSpinner/>
     }
