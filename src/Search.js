@@ -21,7 +21,7 @@ export default function Search() {
   const handleClose = () => {
     setTicker('');
     setSuggestions([]);
-    router('/search/home');
+    router('/search');
   };
 
   const fetchSuggestions = async (value) => {
