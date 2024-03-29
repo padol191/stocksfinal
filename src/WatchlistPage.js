@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import LoadingPage from "../loading";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 async function fetchLatestPrice(symbol) {
   try {
@@ -86,7 +87,7 @@ const WatchlistPage = () => {
   
   console.log(watchlist)
   if(!watchlist || watchlist.length === 0) {
-    return <div>Your watchlist is empty.</div>;
+    return <LoadingSpinner></LoadingSpinner>;
   }
   
   return (
