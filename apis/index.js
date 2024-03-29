@@ -508,13 +508,14 @@ app.get('/hourlyPrice/:ticker', async (req, res) => {
       startDate = formatDate(new Date(lastWorkingDay.getTime() - 24 * 60 * 60 * 1000));
       endDate = formatDate(lastWorkingDay);
     }
-
-    const response = await axios.get(`https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/hour/${startDate}/${endDate}?adjusted=true&sort=asc&limit=120&apiKey=${POLYGON}`);
+    console.log(startDate)
+    console.log(endDate)
+    const response = await axios.get(`https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/hour/${startDate}/${endDate}?adjusted=true&limit=24&sort=asc&apiKey=${POLYGON}`);
     const data = response.data.results.map(({ t, o, c }) => [t * 1000, c]); // Map to [timestamp, close] format
     console.log(data)
     res.json({
-      categories: data.map(([timestamp]) => new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })), // Extract time categories
-      data: [{ name: ticker, data }]
+      // categories: data.map(([timestamp]) => new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })), // Extract time categories
+      data: { name: ticker, data }
     });
   } catch (error) {
     // console.error(error);

@@ -60,7 +60,7 @@ async function fetchWatchlistData() {
     return response.json();
 }
 
-export default function Stock() {
+const Stock = () => {
     const { ticker } = useParams();
 
     // Define state variables to hold data fetched from APIs
@@ -200,3 +200,5 @@ export default function Stock() {
         </>
     );
 }
+
+export default React.memo(Stock)
