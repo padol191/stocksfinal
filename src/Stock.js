@@ -7,6 +7,7 @@ import TopNews from './components/TopNews';
 import Charts from './components/Charts';
 import Insights from './components/Insights';
 import LoadingSpinner from './components/LoadingSpinner';
+import StockInfoHeader from './components/StockInfoHeader';
 
 // Fetch functions
 async function fetchLatestPriceData(stock) {
@@ -145,7 +146,9 @@ export default function Stock() {
     return (
         <>
         { ready ?
+
         <div className='container m-auto'>
+            {/* <StockInfoHeader data={companyData} stock={ticker} watchlistData={watchlistData} /> */}
             {/* For small screens */}
             <div className="d-sm-none">
                 <div className="row">
