@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 const SellModal = ({ show, onHide, stock, triggerAlert }) => {
   const modalRef = useRef(null);
   const [balance, setBalance] = useState(null);
-  const [quantity, setQuantity] = useState(200); // Initial quantity value
+  const [quantity, setQuantity] = useState(0); // Initial quantity value
 
   const handleAlert = (message) => {
     // Call the function passed from the parent component to trigger the alert

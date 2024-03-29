@@ -95,6 +95,7 @@ const WatchlistPage = () => {
       <h3>My Watchlist</h3>
       {watchlist.map((item, index) => (
         <div key={item.symbol} className="w-100 mx-auto border rounded p-2 my-3">
+          <a href={`/search/${item.symbol}`} style={{textDecoration: 'none', color: 'black'}}>
           <div className="row d-flex flex-start w-100">
             <div className="col-1">
               <FontAwesomeIcon 
@@ -113,6 +114,7 @@ const WatchlistPage = () => {
               <p className="col-6" style={ item.latestPrice.dp < 0 ? {color: 'red'} : {color: 'green'}}>{(item.latestPrice.dp < 0 ? '▼' : '▲') + item.latestPrice.d.toFixed(2) + ' (' + item.latestPrice.dp.toFixed(2) + '%)'}</p>
             </div>
           </div>
+          </a>
         </div>
       ))}
     </div>

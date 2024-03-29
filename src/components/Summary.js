@@ -39,7 +39,7 @@ const formatXAxisCategories = (categories, data) => {
   return formattedCategories;
 };
 
-const Summary = ({ companyData, latestPriceData, peersData, stock }) => {
+const Summary = ({ companyData, latestPriceData, peersData, stock, hourlyPriceData }) => {
 //   const [latestPriceData, setLatestPriceData] = useState(null);
 //   const [companyData, setCompanyData] = useState(null);
 //   const [peersData, setPeersData] = useState([]);
@@ -85,9 +85,35 @@ const Summary = ({ companyData, latestPriceData, peersData, stock }) => {
 //   }))
 // };
 
+const options = {
+  chart: {
+      type: 'line'
+  },
+  title: {
+      text: 'Hourly Stock Price Data'
+  },
+  xAxis: {
+      type: 'datetime',
+      title: {
+          text: 'Time'
+      }
+  },
+  yAxis: {
+      title: {
+          text: 'Price'
+      }
+  },
+  series: [{
+      name: 'Stock Price',
+      data: hourlyPriceData.data.data
+  }]
+}
+
   return (
-    <div className="d-flex justify-content-center align-items-center my-3">
-      <div className="d-flex flex-column justify-content-center align-items-center text-center flex-grow-1 lh-1">
+    // <div className="d-flex justify-content-center align-items-center my-3">
+    //   <div className="d-flex flex-column justify-content-center align-items-center text-center flex-grow-1 lh-1">
+    <div className="row text-center my-3">
+    <div className="col-lg-6 col-sm-12">
         <div style={{ lineHeight: '0.5rem' }}>
           <p><b>High Price</b>: {latestPriceData.h.toFixed(2)}</p>
           <p><b>Low Price</b>: {latestPriceData.l.toFixed(2)}</p>
@@ -110,11 +136,12 @@ const Summary = ({ companyData, latestPriceData, peersData, stock }) => {
           </p>
         </div>
       </div>
-      <div className="flex-grow-1">
-        {/* <HighchartsReact
+      {/* <div className="flex-grow-1"> */}
+      <div className="col-lg-6 col-sm-12">
+        <HighchartsReact
                 highcharts={Highcharts}
                 options={options}
-        /> */}
+        />
       </div>
     </div>
   );
