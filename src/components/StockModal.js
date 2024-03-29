@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {useNavigate} from 'react-router-dom'
 
 const StockModal = ({ show, onHide, stock, updatePortfolioData }) => {
   const modalRef = useRef(null);
@@ -55,7 +56,6 @@ const StockModal = ({ show, onHide, stock, updatePortfolioData }) => {
 
       // Close the modal after successful purchase
       onHide();
-
       // Update portfolio data
     } catch (error) {
       console.error('Error buying stock:', error);

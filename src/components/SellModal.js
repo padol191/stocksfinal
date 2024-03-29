@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 const SellModal = ({ show, onHide, stock, updatePortfolioData }) => {
   const modalRef = useRef(null);
   const [balance, setBalance] = useState(null);
-  const [quantity, setQuantity] = useState(200); // Initial quantity value
+  const [quantity, setQuantity] = useState(0); // Initial quantity value
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -52,7 +52,6 @@ const SellModal = ({ show, onHide, stock, updatePortfolioData }) => {
 
       // Display success toast
       toast.info('Stock sold successfully!');
-
       // Close the modal after successful sale
       onHide();
 

@@ -7,6 +7,7 @@ import WatchlistPage from './WatchlistPage';
 import 'react-toastify/dist/ReactToastify.css';
 import Search from './Search';
 import reportWebVitals from './reportWebVitals';
+import Footer from './components/Footer';
 import {
   useQuery,
   useMutation,
@@ -53,6 +54,7 @@ theme="light"
     
     </BrowserRouter>
     </QueryClientProvider>
+    <Footer />
   </React.StrictMode>
 );
 

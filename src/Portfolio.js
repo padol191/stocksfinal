@@ -55,6 +55,7 @@ const PortfolioPage = () => {
 
   return (
     <div className="container col-lg-8" style={{ marginTop: '5rem' }}>
+      <ToastContainer position="top-center" className="p-3"></ToastContainer>
       <h3>My Portfolio</h3>
 
           {portfolioData.map((stock, index) => (
@@ -141,3 +142,4 @@ const PortfolioPage = () => {
 };
 
 export default PortfolioPage;
+
