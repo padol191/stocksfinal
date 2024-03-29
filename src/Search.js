@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+// import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 export default function Search({ children }) {
   const [ticker, setTicker] = useState('');
@@ -13,14 +13,14 @@ export default function Search({ children }) {
   const handleSubmit = useCallback(() => {
     console.log('Ticker', ticker);
     if (ticker !== '') {
-      router.push(`/search/${localStorage.getItem('stock')}`);
+      router(`/search/${localStorage.getItem('stock')}`);
     }
   }, [ticker, router]);
 
   const handleClose = () => {
     setTicker('');
     setSuggestions([]);
-    router.push('/search/home');
+    router('/search/home');
   };
 
   const fetchSuggestions = async (value) => {
@@ -59,6 +59,7 @@ export default function Search({ children }) {
 
   const handleItemClick = (item) => {
     setTicker(item.symbol);
+    console.log(ticker)
     setSuggestions([]);
   };
 
@@ -101,9 +102,6 @@ export default function Search({ children }) {
               <li className="list-group-item text-center">
 
               </li>
-            )}
-            {!isLoading && suggestions.length === 0 && (
-              <li className="list-group-item">No suggestions found</li>
             )}
             {!isLoading &&
               suggestions.length > 0 &&

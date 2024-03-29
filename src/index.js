@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from './App';
+import WatchlistPage from './WatchlistPage';
 import Search from './Search';
 import reportWebVitals from './reportWebVitals';
 import {
@@ -12,10 +13,10 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
-
 import CustomNavbar from './CustomNavbar';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
+
 const queryClient = new QueryClient()
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -25,7 +26,12 @@ root.render(
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
     <CustomNavbar />
-    <Search />
+    <Routes>
+      <Route path="/search" element={<Search />}></Route>
+      <Route path="/watchlist" element={<WatchlistPage />}></Route>
+      
+    </Routes>
+    
     </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>
