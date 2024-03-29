@@ -17,6 +17,7 @@ import CustomNavbar from './CustomNavbar';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import Stock from './Stock';
+import PortfolioPage from './Portfolio';
 
 const queryClient = new QueryClient()
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -24,15 +25,17 @@ root.render(
   <React.StrictMode>
 
    
+    <CustomNavbar />
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-    <CustomNavbar />
     <Routes>
       <Route path="/search/*" element={<Search />}>
         <Route path=":ticker" element={<Stock />}></Route>
       </Route>
       {/* <Route index path="/search/*" element={<Stock />}></Route> */}
       <Route path="/watchlist" element={<WatchlistPage />}></Route>
+      <Route path="/portfolio" element={<PortfolioPage />}></Route>
+      
     </Routes>
     
     </BrowserRouter>
