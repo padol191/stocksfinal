@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from './App';
+import Search from './Search';
 import reportWebVitals from './reportWebVitals';
 import {
   useQuery,
@@ -21,9 +23,11 @@ root.render(
 
    
     <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
     <CustomNavbar>
-    <App />
+    <Search />
     </CustomNavbar>
+    </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>
 );
