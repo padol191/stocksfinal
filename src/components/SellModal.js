@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast} from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const SellModal = ({ show, onHide, stock, updatePortfolioData }) => {
   const modalRef = useRef(null);
@@ -32,7 +32,7 @@ const SellModal = ({ show, onHide, stock, updatePortfolioData }) => {
     try {
       const payload = {
         symbol: stock.symbol,
-        currentPrice: stock.latestPrice.c,
+        price: stock.latestPrice.c,
         name: stock.name,
         quantity: quantity
       };
@@ -46,17 +46,17 @@ const SellModal = ({ show, onHide, stock, updatePortfolioData }) => {
       });
 
       if (!response.ok) {
+        toast.error('Failed to sell stock');
         throw new Error('Failed to sell stock');
       }
 
       // Display success toast
-      toast.success('Stock sold successfully!');
+      toast.info('Stock sold successfully!');
 
       // Close the modal after successful sale
       onHide();
 
       // Update portfolio data
-      updatePortfolioData();
     } catch (error) {
       console.error('Error selling stock:', error);
     }
@@ -88,7 +88,7 @@ const SellModal = ({ show, onHide, stock, updatePortfolioData }) => {
               </div>
               <div className="modal-body">
                 <p>Current Price: {stock.latestPrice.c}</p>
-                <p>Money in Wallet: {balance}</p>
+                <p>Quantity: {stock.quantity}</p>
                 <div className="form-group">
                   <label htmlFor="quantity">Quantity:</label>
                   <input

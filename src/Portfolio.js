@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
 import StockModal from "./components/StockModal";
 import SellModal from "./components/SellModal";
-
+import { toast } from "react-toastify";
 async function fetchPortfolioData() {
   const response = await fetch('http://localhost:5000/portfolio');
   return response.json();

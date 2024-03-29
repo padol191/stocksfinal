@@ -4,6 +4,7 @@ import './index.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from './App';
 import WatchlistPage from './WatchlistPage';
+import 'react-toastify/dist/ReactToastify.css';
 import Search from './Search';
 import reportWebVitals from './reportWebVitals';
 import {
@@ -18,13 +19,25 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import Stock from './Stock';
 import PortfolioPage from './Portfolio';
+import {ToastContainer} from 'react-toastify'
 
 const queryClient = new QueryClient()
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
 
-   
+<ToastContainer
+position="top-center"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="light"
+/>
     <CustomNavbar />
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
