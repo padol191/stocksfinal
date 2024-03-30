@@ -13,7 +13,7 @@ const StockModal = ({ show, onHide, stock, triggerAlert }) => {
     // Call the function passed from the parent component to trigger the alert
     triggerAlert(message);
   };
-
+console.log(stock)
   useEffect(() => {
     const fetchBalance = async () => {
       try {

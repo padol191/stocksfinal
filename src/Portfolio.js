@@ -58,6 +58,7 @@ const PortfolioPage = () => {
         const portfolioData = await fetchPortfolioData();
         const updatedPortfolioData = await fetchPrices(portfolioData);
         setPortfolioData(updatedPortfolioData);
+        console.log(portfolioData)
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching portfolio data:', error);

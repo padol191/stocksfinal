@@ -1,10 +1,31 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import LatestPrice from "./LatestPrice";
-import StockModal from "./StockModal";
 import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import StockModal from "./StockModal";
+import SellModal from "./SellModal";
+import { useNavigate, useParams } from "react-router-dom";
+// import {useParams} from 'react-router-dom'
 
+async function fetchPortfolioData() {
+ 
+  const response = await fetch('http://localhost:5000/portfolio');
+  return response.json();
+}
+
+async function getLatestPrice(stock) {
+  const response = await fetch(`http://localhost:5000/latestPrice/${stock}`);
+  return response.json();
+}
+
+async function fetchPrices(data) {
+  for (let i = 0; i < data.length; i++) {
+    const temp = await getLatestPrice(data[i].symbol);
+    data[i].latestPrice = temp;
+  }
+  return data;
+}
 async function fetchLatestPrice(stock) {
   const latestPrice = await fetch('http://localhost:5000/latestPrice/'+stock)
   return latestPrice.json()
@@ -14,7 +35,8 @@ async function marketOpen(lastPriceUpdate) {
   const currentTimestamp = Date.now();
   const differenceInMilliseconds = currentTimestamp - lastPriceUpdate;
   const differenceInMinutes = differenceInMilliseconds / (1000 * 60);
-  
+
+
   if (differenceInMinutes > 5) {
     const date = new Date(lastPriceUpdate*1000);
     const formattedDate = date.toISOString().slice(0, 19).replace('T', ' ');
@@ -26,20 +48,37 @@ async function marketOpen(lastPriceUpdate) {
 
 
 const StockInfoHeader = ({data, watchlistData}) => {
+  const router = useNavigate()
+  const {ticker} = useParams()
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [portfolioData, setPortfolioData] = useState([]);
+  const handleAlert = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
+  };
   console.log('Data', data)
   let arraydata = [data]
   console.log(arraydata)
   // console.log('stock', stock)
   console.log('watchlist', watchlistData)
   const [ready, setReady] = useState(false)
+  const [stocktochange,setstockchange] = useState()
   const [showModal, setShowModal] = useState(false);
   const handleShowModal = () => setShowModal(true);
   const handleHideModal = () => setShowModal(false);
-
+  const [stocktosell,setstocksell] = useState()
+  const [showsellModal, setShowsellModal] = useState(false);
+  const handleShowsellModal = () => setShowsellModal(true);
+  const handleHidesellModal = () => setShowsellModal(false);
   // const [latestPrice, setLatestPrice] = useState()
   const [isMarketOpen, setIsMarketOpen] = useState({})
   const [isStockInWatchlist, setIsStockInWatchlist] = useState(false)
-
+const[filteredData,setfilterdData] = useState()
   useEffect(() => {
       const fetchData = async () => {
       const latestPriceData = await fetchLatestPrice(data.ticker)
@@ -48,6 +87,19 @@ const StockInfoHeader = ({data, watchlistData}) => {
       setIsMarketOpen(isMarketOpenData)
       const isStock = await watchlistData.some(data => data.symbol === data.ticker);
       setIsStockInWatchlist(isStock)
+      const portfolioData = await fetchPortfolioData();
+      const updatedPortfolioData = await fetchPrices(portfolioData);
+      setPortfolioData(updatedPortfolioData);
+      const filteredData = portfolioData.filter(item => item.symbol === ticker);
+      setfilterdData({
+          symbol: ticker,
+          latestPrice:{
+            c:latestPriceData.c
+          },
+          name:ticker
+        ,
+        balance: 200
+        })
       setReady(true)
     }
     fetchData()
@@ -59,6 +111,15 @@ const StockInfoHeader = ({data, watchlistData}) => {
     <>
     { ready ? 
     <>
+    <>
+    <div className="container col-lg-8" style={{ marginTop: '5rem' }}>
+        {showAlert && (
+        <div className="alert alert-success" role="alert">
+          {alertMessage}
+        </div>
+      )}
+      </div>
+    </>
     { arraydata.map((item, index) => (
       <div className="container row justify-content-center align-items-start mx-auto my-4">
         <div className="col-4 col-3-sm  p-1-sm text-center">
@@ -66,8 +127,8 @@ const StockInfoHeader = ({data, watchlistData}) => {
           <h5>{item.name}</h5>
           <p>{item.exchange}</p>
           <div className="row justify-content-center align-items-center">
-            <button className="col-lg-2 col-sm-2" style={{ backgroundColor: 'green', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }} onClick={handleShowModal}>Buy</button>
-            <button className="col-lg-2 col-sm-2" style={{ backgroundColor: 'red', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }}>Sell</button>
+            <button className="col-lg-2 col-sm-2" style={{ backgroundColor: 'green', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }} onClick={()=>{setstocksell(item);handleShowModal()}}>Buy</button>
+            <button className="col-lg-2 col-sm-2" style={{ backgroundColor: 'red', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }} onClick={()=>{setstocksell(item);handleShowsellModal()}}>Sell</button>
           </div>
         </div>
         <div className="col-4 col-3-sm p-1-sm text-center">
@@ -79,11 +140,20 @@ const StockInfoHeader = ({data, watchlistData}) => {
       </div>
 ))}
       <div className="text-center" style={{color: isMarketOpen.color}}>{isMarketOpen.text}</div>
-      <StockModal
+
+                      <StockModal
         show={showModal}
         onHide={handleHideModal}
-        stock={data}
-      /> 
+        stock={filteredData}
+        triggerAlert={handleAlert}
+      />
+                
+        <SellModal
+        show={showsellModal}
+        onHide={handleHidesellModal}
+        stock={filteredData}
+        triggerAlert={handleAlert}
+      />
       </> : <LoadingSpinner/>
     }
     </>

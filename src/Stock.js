@@ -6,6 +6,7 @@ import Summary from './components/Summary';
 import TopNews from './components/TopNews';
 import Charts from './components/Charts';
 import Insights from './components/Insights';
+
 import LoadingSpinner from './components/LoadingSpinner';
 import StockInfoHeader from './components/StockInfoHeader';
 
@@ -129,7 +130,7 @@ const Stock = () => {
     const [activeIndex, setActiveIndex] = useState(0);
 
     const tabs = [
-        { name: 'Summary', component: <Summary latestPriceData={latestPriceData} companyData={companyData} peersData={peersData} sentimentData={sentimentData} hourlyPriceData={hourlyPriceData} stock={ticker} /> },
+        // { name: 'Summary', component: <Summary latestPriceData={latestPriceData} companyData={companyData} peersData={peersData} sentimentData={sentimentData} hourlyPriceData={hourlyPriceData} stock={ticker} /> },
         { name: 'Top News', component: <TopNews newsData={newsData} stock={ticker} /> },
         { name: 'Charts', component: <Charts chartsData={chartsData} stock={ticker} /> },
         { name: 'Insights', component: <Insights sentimentData={sentimentData} earningsData={earningsData} recommendationData={recommendationData} stock={ticker} /> }
@@ -195,6 +196,7 @@ const Stock = () => {
                 <div className="tab-content">
                     <div className="tab-pane fade show active">{tabs[activeIndex].component}</div>
                 </div>
+
             </div>
         </div> : <LoadingSpinner />}
         </>
