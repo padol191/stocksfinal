@@ -4,7 +4,7 @@ import LatestPrice from "./LatestPrice";
 import StockModal from "./StockModal";
 import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
-
+import {useParams} from 'react-router-dom'
 async function fetchLatestPrice(stock) {
   const latestPrice = await fetch('http://localhost:5000/latestPrice/'+stock)
   return latestPrice.json()
@@ -25,7 +25,8 @@ async function marketOpen(lastPriceUpdate) {
 }
 
 
-const StockInfoHeader = ({data, watchlistData}) => {
+const StockInfoHeader = ({data, watchlistData, priceData}) => {
+  const {ticker} = useParams()
   console.log('Data', data)
   let arraydata = [data]
   console.log(arraydata)
@@ -40,13 +41,50 @@ const StockInfoHeader = ({data, watchlistData}) => {
   const [isMarketOpen, setIsMarketOpen] = useState({})
   const [isStockInWatchlist, setIsStockInWatchlist] = useState(false)
 
+  const handleWatchlistToggle = async (name, symbol) => {
+    try {
+  
+      let response;
+      if (isStockInWatchlist) {
+        const payload1 = { symbol: symbol };
+        // Remove the stock from the watchlist
+        response = await fetch('http://localhost:5000/removeFromWatchlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload1),
+        });
+      } else {
+        const payload2 = { symbol: symbol, name: name };
+        // Add the stock to the watchlist
+        response = await fetch('http://localhost:5000/addToWatchlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload2),
+        });
+      }
+  
+      if (response.ok) {
+        // Update the state based on the API response
+        setIsStockInWatchlist(!isStockInWatchlist);
+      } else {
+        console.error('Failed to update watchlist:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error updating watchlist:', error);
+    }
+  };
+
   useEffect(() => {
       const fetchData = async () => {
       const latestPriceData = await fetchLatestPrice(data.ticker)
       // setLatestPrice(latestPriceData)
       const isMarketOpenData = await marketOpen(latestPriceData.t)
       setIsMarketOpen(isMarketOpenData)
-      const isStock = await watchlistData.some(data => data.symbol === data.ticker);
+      const isStock = await watchlistData.some(data => data.symbol === ticker);
       setIsStockInWatchlist(isStock)
       setReady(true)
     }
@@ -62,7 +100,7 @@ const StockInfoHeader = ({data, watchlistData}) => {
     { arraydata.map((item, index) => (
       <div className="container row justify-content-center align-items-start mx-auto my-4">
         <div className="col-4 col-3-sm  p-1-sm text-center">
-          <h4>{item.ticker}<span><FontAwesomeIcon icon={faStar} style={{ color: isStockInWatchlist ? 'yellow' : 'inherit' }}></FontAwesomeIcon></span></h4>
+          <h4>{item.ticker}<span><FontAwesomeIcon icon={faStar} style={{ color: isStockInWatchlist ? 'yellow' : 'inherit' }} onClick={() => handleWatchlistToggle(item.name, item.ticker)}></FontAwesomeIcon></span></h4>
           <h5>{item.name}</h5>
           <p>{item.exchange}</p>
           <div className="row justify-content-center align-items-center">
@@ -74,7 +112,7 @@ const StockInfoHeader = ({data, watchlistData}) => {
           <img src={item.logo} width={100} height={100} alt="Company Logo" />
         </div>
         <div className="col-4 col-3-sm p-1-sm text-center">
-          {/* <LatestPrice stock={item.ticker}></LatestPrice> */}
+          {/* <LatestPrice latestPriceDataFromStockInfoHeader={priceData}></LatestPrice> */}
         </div>
       </div>
 ))}
