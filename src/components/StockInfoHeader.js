@@ -26,7 +26,6 @@ async function fetchPrices(data) {
   }
   return data;
 }
-import {useParams} from 'react-router-dom'
 async function fetchLatestPrice(stock) {
   const latestPrice = await fetch('http://localhost:5000/latestPrice/'+stock)
   return latestPrice.json()
@@ -48,7 +47,8 @@ async function marketOpen(lastPriceUpdate) {
 }
 
 
-const StockInfoHeader = ({data, watchlistData}) => {
+
+const StockInfoHeader = ({data, watchlistData, priceData}) => {
   const router = useNavigate()
   const {ticker} = useParams()
   const [alertMessage, setAlertMessage] = useState('');
@@ -62,8 +62,6 @@ const StockInfoHeader = ({data, watchlistData}) => {
       setShowAlert(false);
     }, 3000);
   };
-const StockInfoHeader = ({data, watchlistData, priceData}) => {
-  const {ticker} = useParams()
   console.log('Data', data)
   let arraydata = [data]
   console.log(arraydata)
