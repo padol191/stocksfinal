@@ -77,6 +77,8 @@ const Stock = () => {
     const [hourlyPriceData, setHourlyPriceData] = useState(null);
     const [watchlistData, setWatchlistData] = useState(null);
 
+    const [priceData, setPriceData] = useState(null)
+
     useEffect(() => {
         // Fetch data from APIs
         const fetchData = async () => {
@@ -87,6 +89,7 @@ const Stock = () => {
             // Fetch latest price data
             const latestPriceDataResponse = await fetchLatestPriceData(ticker);
             setLatestPriceData(latestPriceDataResponse);
+            setPriceData(latestPriceDataResponse)
 
             // Fetch peers data
             const peersDataResponse = await fetchPeersData(ticker);
@@ -149,7 +152,7 @@ const Stock = () => {
         { ready ?
 
         <div className='container m-auto'>
-            <StockInfoHeader data={companyData} stock={ticker} watchlistData={watchlistData} />
+            <StockInfoHeader data={companyData} stock={ticker} watchlistData={watchlistData} priceData={priceData} />
             {/* For small screens */}
             <div className="d-sm-none">
                 <div className="row">
