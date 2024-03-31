@@ -1,12 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as SolidStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as HollowStar } from '@fortawesome/free-regular-svg-icons';
 import LatestPrice from "./LatestPrice";
 import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import StockModal from "./StockModal";
 import SellModal from "./SellModal";
 import { useNavigate, useParams } from "react-router-dom";
-// import {useParams} from 'react-router-dom'
 
 async function fetchPortfolioData() {
  
@@ -54,6 +54,7 @@ const StockInfoHeader = ({data, watchlistData, priceData}) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [portfolioData, setPortfolioData] = useState([]);
+  const [showSellButton, setShowSellButton] = useState(false)
   const handleAlert = (message) => {
     setAlertMessage(message);
     setShowAlert(true);
@@ -79,7 +80,7 @@ const StockInfoHeader = ({data, watchlistData, priceData}) => {
   // const [latestPrice, setLatestPrice] = useState()
   const [isMarketOpen, setIsMarketOpen] = useState({})
   const [isStockInWatchlist, setIsStockInWatchlist] = useState(false)
-const[filteredData,setfilterdData] = useState()
+const[filteredData,setfilteredData] = useState()
 
   const handleWatchlistToggle = async (name, symbol) => {
     try {
@@ -130,21 +131,27 @@ const[filteredData,setfilterdData] = useState()
       const updatedPortfolioData = await fetchPrices(portfolioData);
       setPortfolioData(updatedPortfolioData);
       const filteredData = portfolioData.filter(item => item.symbol === ticker);
-      setfilterdData({
-          symbol: ticker,
-          latestPrice:{
-            c:latestPriceData.c
-          },
-          name:ticker
-        ,
-        balance: 200
-        })
+      setfilteredData({
+        symbol: ticker,
+        latestPrice:{
+          c:latestPriceData.c
+        },
+        name:arraydata[0].name
+      ,
+      balance: 200
+      })
+      if(filteredData) {
+        setShowSellButton(true)
+      }
       setReady(true)
     }
     fetchData()
   }, [watchlistData])
 
-  // Check if the stock is in watchlistData
+  useEffect(() => {
+
+  }, [showSellButton])
+
 
   return (
     <>
@@ -160,21 +167,51 @@ const[filteredData,setfilterdData] = useState()
       </div>
     </>
     { arraydata.map((item, index) => (
-      <div className="container row justify-content-center align-items-start mx-auto my-4">
+      <div key={index} className="container row justify-content-center align-items-start mx-auto my-4">
         <div className="col-4 col-3-sm  p-1-sm text-center">
-          <h4>{item.ticker}<span><FontAwesomeIcon icon={faStar} style={{ color: isStockInWatchlist ? 'yellow' : 'inherit' }} onClick={() => handleWatchlistToggle(item.name, item.ticker)}></FontAwesomeIcon></span></h4>
+          {/*style={{ color: isStockInWatchlist ? 'yellow' : 'inherit' }}*/}
+          <h4>{item.ticker}
+            <span>
+              {/* <FontAwesomeIcon 
+                icon={isStockInWatchlist ? SolidStar : HollowStar} 
+                onClick={() => 
+                  handleWatchlistToggle(item.name, item.ticker)
+                }
+              /> */}
+              {
+                isStockInWatchlist ? 
+                (
+                  <FontAwesomeIcon 
+                    icon={SolidStar} 
+                    style={{color: 'yellow'}}
+                    onClick={() => handleWatchlistToggle(item.name, item.ticker)
+                    }
+                  />
+                ) 
+                : 
+                (
+                  <FontAwesomeIcon 
+                    icon={HollowStar} 
+                    onClick={() => handleWatchlistToggle(item.name, item.ticker)
+                    }
+                  />
+                )
+              }
+            </span>
+          </h4>
           <h5>{item.name}</h5>
           <p>{item.exchange}</p>
           <div className="row justify-content-center align-items-center">
             <button className="col-lg-2 col-sm-2" style={{ backgroundColor: 'green', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }} onClick={()=>{setstocksell(item);handleShowModal()}}>Buy</button>
-            <button className="col-lg-2 col-sm-2" style={{ backgroundColor: 'red', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }} onClick={()=>{setstocksell(item);handleShowsellModal()}}>Sell</button>
+            { showSellButton && <button className="col-lg-2 col-sm-2" style={{ backgroundColor: 'red', border: 'none', borderRadius: '5px', color: 'white', margin: '2px' }} onClick={()=>{setstocksell(item);handleShowsellModal()}}>Sell</button>}
           </div>
         </div>
         <div className="col-4 col-3-sm p-1-sm text-center">
           <img src={item.logo} width={100} height={100} alt="Company Logo" />
         </div>
         <div className="col-4 col-3-sm p-1-sm text-center">
-          {/* <LatestPrice latestPriceDataFromStockInfoHeader={priceData}></LatestPrice> */}
+          <LatestPrice latestPriceDataFromStockInfoHeader={priceData}></LatestPrice>
+          
         </div>
       </div>
 ))}

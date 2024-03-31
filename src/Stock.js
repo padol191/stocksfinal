@@ -10,7 +10,6 @@ import Insights from './components/Insights';
 import LoadingSpinner from './components/LoadingSpinner';
 import StockInfoHeader from './components/StockInfoHeader';
 
-// Fetch functions
 async function fetchLatestPriceData(stock) {
     const response = await fetch(`http://localhost:5000/latestPrice/${stock}`);
     return response.json();
@@ -18,6 +17,7 @@ async function fetchLatestPriceData(stock) {
 
 async function fetchCompanyData(stock) {
     const response = await fetch(`http://localhost:5000/company/${stock}`);
+
     return response.json();
 }
 
@@ -63,77 +63,104 @@ async function fetchWatchlistData() {
 
 const Stock = () => {
     const { ticker } = useParams();
-
-    // Define state variables to hold data fetched from APIs
     const [ready, setReady] = useState(false)
     const [companyData, setCompanyData] = useState(null);
-    const [latestPriceData, setLatestPriceData] = useState(null);
-    const [peersData, setPeersData] = useState(null);
-    const [newsData, setNewsData] = useState(null);
-    const [sentimentData, setSentimentData] = useState(null);
-    const [earningsData, setEarningsData] = useState(null);
-    const [recommendationData, setRecommendationData] = useState(null);
-    const [chartsData, setChartsData] = useState(null);
-    const [hourlyPriceData, setHourlyPriceData] = useState(null);
-    const [watchlistData, setWatchlistData] = useState(null);
-
+    const [latestPriceData, setLatestPriceData] = useState({});
+    const [peersData, setPeersData] = useState([]); 
+    const [newsData, setNewsData] = useState([]); 
+    const [sentimentData, setSentimentData] = useState({});
+    const [earningsData, setEarningsData] = useState([]); 
+    const [recommendationData, setRecommendationData] = useState([]);
+    const [chartsData, setChartsData] = useState({});
+    const [hourlyPriceData, setHourlyPriceData] = useState({});
+    const [watchlistData, setWatchlistData] = useState([]);
     const [priceData, setPriceData] = useState(null)
 
+
     useEffect(() => {
-        // Fetch data from APIs
         const fetchData = async () => {
-            // Fetch company data
-            const companyDataResponse = await fetchCompanyData(ticker);
-            setCompanyData(companyDataResponse);
-
-            // Fetch latest price data
-            const latestPriceDataResponse = await fetchLatestPriceData(ticker);
-            setLatestPriceData(latestPriceDataResponse);
-            setPriceData(latestPriceDataResponse)
-
-            // Fetch peers data
-            const peersDataResponse = await fetchPeersData(ticker);
-            setPeersData(peersDataResponse);
-
-            // Fetch news data
-            const newsDataResponse = await fetchNewsData(ticker);
-            setNewsData(newsDataResponse);
-
-            // Fetch sentiment data
-            const sentimentDataResponse = await fetchSentimentData(ticker);
-            setSentimentData(sentimentDataResponse);
-
-            // Fetch earnings data
-            const earningsDataResponse = await fetchEarningsData(ticker);
-            setEarningsData(earningsDataResponse);
-
-            // Fetch recommendation data
-            const recommendationDataResponse = await fetchRecommendationData(ticker);
-            setRecommendationData(recommendationDataResponse);
-
-            // Fetch charts data
-            const chartsDataResponse = await fetchChartsData(ticker);
-            setChartsData(chartsDataResponse);
-
-            // Fetch hourly price data
-            const hourlyPriceDataResponse = await fetchHourlyPriceData(ticker);
-            setHourlyPriceData(hourlyPriceDataResponse);
-
-            // Fetch watchlist data
-            const watchlistDataResponse = await fetchWatchlistData();
-            setWatchlistData(watchlistDataResponse);
-
-            setReady(true)
+            try {
+                const companyDataResponse = await fetchCompanyData(ticker);
+                setCompanyData(companyDataResponse);
+            } catch (error) {
+                console.error("Error fetching company data:", error);
+            }
+    
+            try {
+                const latestPriceDataResponse = await fetchLatestPriceData(ticker);
+                setLatestPriceData(latestPriceDataResponse);
+                setPriceData(latestPriceDataResponse);
+            } catch (error) {
+                console.error("Error fetching latest price data:", error);
+            }
+    
+            try {
+                const peersDataResponse = await fetchPeersData(ticker);
+                setPeersData(peersDataResponse);
+            } catch (error) {
+                console.error("Error fetching peers data:", error);
+            }
+    
+            try {
+                const newsDataResponse = await fetchNewsData(ticker);
+                setNewsData(newsDataResponse);
+            } catch (error) {
+                console.error("Error fetching news data:", error);
+            }
+    
+            try {
+                const sentimentDataResponse = await fetchSentimentData(ticker);
+                setSentimentData(sentimentDataResponse);
+            } catch (error) {
+                console.error("Error fetching sentiment data:", error);
+            }
+    
+            try {
+                const earningsDataResponse = await fetchEarningsData(ticker);
+                setEarningsData(earningsDataResponse);
+            } catch (error) {
+                console.error("Error fetching earnings data:", error);
+            }
+    
+            try {
+                const recommendationDataResponse = await fetchRecommendationData(ticker);
+                setRecommendationData(recommendationDataResponse);
+            } catch (error) {
+                console.error("Error fetching recommendation data:", error);
+            }
+    
+            try {
+                const chartsDataResponse = await fetchChartsData(ticker);
+                setChartsData(chartsDataResponse);
+            } catch (error) {
+                console.error("Error fetching charts data:", error);
+            }
+    
+            try {
+                const hourlyPriceDataResponse = await fetchHourlyPriceData(ticker);
+                setHourlyPriceData(hourlyPriceDataResponse);
+            } catch (error) {
+                console.error("Error fetching hourly price data:", error);
+            }
+    
+            try {
+                const watchlistDataResponse = await fetchWatchlistData();
+                setWatchlistData(watchlistDataResponse);
+            } catch (error) {
+                console.error("Error fetching watchlist data:", error);
+            }
+    
+            setReady(true);
         };
-
+    
         fetchData();
     }, [ticker]);
+    
 
-    // Tabs navigation handlers
     const [activeIndex, setActiveIndex] = useState(0);
 
     const tabs = [
-        // { name: 'Summary', component: <Summary latestPriceData={latestPriceData} companyData={companyData} peersData={peersData} sentimentData={sentimentData} hourlyPriceData={hourlyPriceData} stock={ticker} /> },
+        { name: 'Summary', component: <Summary latestPriceData={latestPriceData} companyData={companyData} peersData={peersData} sentimentData={sentimentData} hourlyPriceData={hourlyPriceData} stock={ticker} /> },
         { name: 'Top News', component: <TopNews newsData={newsData} stock={ticker} /> },
         { name: 'Charts', component: <Charts chartsData={chartsData} stock={ticker} /> },
         { name: 'Insights', component: <Insights sentimentData={sentimentData} earningsData={earningsData} recommendationData={recommendationData} stock={ticker} /> }
@@ -147,13 +174,18 @@ const Stock = () => {
         setActiveIndex(activeIndex === tabs.length - 1 ? 0 : activeIndex + 1);
     };
 
+
     return (
         <>
-        { ready ?
-
-        <div className='container m-auto'>
+            {!ready ? (
+                <LoadingSpinner />
+            ) : companyData && Object.keys(companyData).length === 0 ? (
+                <div className="container col-lg-6 mt-3 alert alert-danger">
+                    No stock found with this symbol
+                </div>
+            ) : (
+                <div className='container m-auto'>
             <StockInfoHeader data={companyData} stock={ticker} watchlistData={watchlistData} priceData={priceData} />
-            {/* For small screens */}
             <div className="d-sm-none">
                 <div className="row">
                     <div className="col">
@@ -181,8 +213,6 @@ const Stock = () => {
                     ))}
                 </div>
             </div>
-
-            {/* For large screens */}
             <div className="d-none d-sm-block w-75 m-auto" >
                 <ul className="nav nav-tabs">
                     {tabs.map((tab, index) => (
@@ -201,7 +231,9 @@ const Stock = () => {
                 </div>
 
             </div>
-        </div> : <LoadingSpinner />}
+        </div> 
+                
+            )}
         </>
     );
 }

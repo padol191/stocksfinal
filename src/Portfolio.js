@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
 import StockModal from "./components/StockModal";
 import SellModal from "./components/SellModal";
-import { toast } from "react-toastify";
-import { Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 async function fetchPortfolioData() {
@@ -23,6 +21,11 @@ async function fetchPrices(data) {
     data[i].latestPrice = temp;
   }
   return data;
+}
+
+async function getBalance() {
+  const response = await fetch('http://localhost:5000/balance')
+  return response.json()
 }
 
 const PortfolioPage = () => { 
@@ -49,8 +52,9 @@ const PortfolioPage = () => {
     const [showsellModal, setShowsellModal] = useState(false);
     const handleShowsellModal = () => setShowsellModal(true);
     const handleHidesellModal = () => setShowsellModal(false);
-  const [portfolioData, setPortfolioData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+    const [portfolioData, setPortfolioData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [balance, setBalance] = useState()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,7 +62,8 @@ const PortfolioPage = () => {
         const portfolioData = await fetchPortfolioData();
         const updatedPortfolioData = await fetchPrices(portfolioData);
         setPortfolioData(updatedPortfolioData);
-        console.log(portfolioData)
+        const bal = await getBalance()
+        setBalance(bal)
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching portfolio data:', error);
@@ -81,11 +86,11 @@ const PortfolioPage = () => {
         </div>
       )}
       <h3>My Portfolio</h3>
-      
+      <h5>Money in Wallet: {balance?.balance}</h5>
           {portfolioData.map((stock, index) => (
       <div key={index} className="row justify-content-center mb-3">
         <div className="row border" style={{ backgroundColor: 'whitesmoke' }}>
-          <h5>{stock.symbol} <small>{stock.name}</small></h5>
+          <h5>{stock?.symbol} <small>{stock?.name}</small></h5>
         </div>
         <div className="row border">
           <div className="col-lg-6 col-sm-12">
@@ -94,7 +99,7 @@ const PortfolioPage = () => {
                 Quantity:
               </div>
               <div className="col-6">
-                {stock.quantity}
+                {stock?.quantity}
               </div>
             </div>
             <div className="row">
@@ -102,7 +107,7 @@ const PortfolioPage = () => {
                 Avg. Cost / Share:
               </div>
               <div className="col-6">
-                {stock.average}
+                {stock?.average}
               </div>
             </div>
             <div className="row">
@@ -110,7 +115,7 @@ const PortfolioPage = () => {
                 Total Cost:
               </div>
               <div className="col-6">
-                {(parseFloat(stock.average) * parseFloat(stock.quantity)).toFixed(2)}
+                {(parseFloat(stock?.average) * parseFloat(stock?.quantity)).toFixed(2)}
               </div>
             </div>
           </div>
@@ -120,7 +125,7 @@ const PortfolioPage = () => {
                 Change:
               </div>
               <div className="col-6">
-                {stock.latestPrice.d}%
+                {stock?.latestPrice?.d}%
               </div>
             </div>
             <div className="row">
@@ -128,7 +133,7 @@ const PortfolioPage = () => {
                 Current Price:
               </div>
               <div className="col-6">
-                {stock.latestPrice.c}
+                {stock?.latestPrice?.c}
               </div>
             </div>
             <div className="row">
@@ -136,7 +141,7 @@ const PortfolioPage = () => {
                 Market Value:
               </div>
               <div className="col-6">
-                {(parseFloat(stock.quantity) * stock.latestPrice.c).toFixed(2)}
+                {(parseFloat(stock?.quantity) * stock?.latestPrice?.c).toFixed(2)}
               </div>
             </div>
           </div>

@@ -76,7 +76,7 @@ app.get('/historicData/:ticker', async (req, res) => {
   const endDateUnix = endDate.getTime();
   const startDateUnix = startDate.getTime();
 
-  axios.get(`https://api.polygon.io/v2/aggs/ticker/${stock}/range/1/day/${startDateUnix}/${endDateUnix}?adjusted=true&sort=asc&apiKey=${POLYGON}`)
+  axios.get(`https://api.polygon.io/v2/aggs/ticker/${stock}/range/1/hour/${startDateUnix}/${endDateUnix}?adjusted=true&sort=asc&apiKey=${POLYGON}`)
     .then(response => {
       console.log(response.data);
       // res.json(response.data);

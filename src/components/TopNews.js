@@ -39,7 +39,7 @@ const TopNews = ({ newsData }) => {
     {index % 2 === 0 ? (
         <>
             <div className="col-lg-6 col-sm-12 mx-auto" onClick={() => handleNewsClick(news)} style={{cursor: 'pointer'}}>
-                <div className="row align-items-center">
+                <div className="row align-items-center mx-1 news rounded" style={{backgroundColor: 'whitesmoke', border: '1px solid lightgrey'}}>
                     <div className="col-12 col-md-3 mb-3 mb-md-0 text-center">
                         <img src={news.image} className="img-fluid" alt="News Image" />
                     </div>
@@ -50,8 +50,8 @@ const TopNews = ({ newsData }) => {
             </div>
             {/* Render next item only if it's available */}
             {newsData[index + 1] && (
-                <div className="col-lg-6 col-sm-12 mx-auto mt-3 mt-md-0" onClick={() => handleNewsClick(news)} style={{cursor: 'pointer'}}>
-                    <div className="row align-items-center">
+                <div className="col-lg-6 col-sm-12 mt-3 mt-md-0" onClick={() => handleNewsClick(news)} style={{cursor: 'pointer'}}>
+                    <div className="row align-items-center mx-1 news rounded" style={{backgroundColor: 'whitesmoke', border: '1px solid lightgrey'}}>
                         <div className="col-12 col-md-3 mb-3 mb-md-0 text-center">
                             <img src={newsData[index + 1].image} className="img-fluid" alt="News Image" />
                         </div>

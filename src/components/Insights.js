@@ -95,8 +95,6 @@ const Insights = ({sentimentData, earningsData, recommendationData, stock}) => {
         },
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        //   pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        //     '<td style="padding:0"><b>{point.y}</b></td></tr>',
             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
                 '<td style="padding:0"><b>{point.y}</b></td><td style="padding:0"> ({point.value})</td></tr>',
           footerFormat: '</table>',
@@ -115,31 +113,31 @@ const Insights = ({sentimentData, earningsData, recommendationData, stock}) => {
             name: 'Strong Buy',
             data: recommendationData.map(item => item.strongBuy),
             stack: 'recommendation',
-            color: '#008000', // Green
+            color: '#008000', 
           },
           {
             name: 'Buy',
             data: recommendationData.map(item => item.buy),
             stack: 'recommendation',
-            color: '#00FF00', // Lighter Green
+            color: '#00FF00', 
           },
           {
             name: 'Hold',
             data: recommendationData.map(item => item.hold),
             stack: 'recommendation',
-            color: '#FFA500', // Orange
+            color: '#FFA500', 
           },
           {
             name: 'Sell',
             data: recommendationData.map(item => item.sell),
             stack: 'recommendation',
-            color: '#FF0000', // Red
+            color: '#FF0000', 
           },
           {
             name: 'Strong Sell',
             data: recommendationData.map(item => item.strongSell),
             stack: 'recommendation',
-            color: '#800000', // Darker Red
+            color: '#800000', 
           },
         ],
       };
@@ -158,36 +156,22 @@ const Insights = ({sentimentData, earningsData, recommendationData, stock}) => {
                 <hr />
                 <div className="row">
                     <div className="col"><b>Total</b></div>
-                    <div className="col">{sentimentData.totalMSPR}</div>
-                    <div className="col">{sentimentData.totalChange}</div>
+                    <div className="col">{sentimentData?.totalMSPR}</div>
+                    <div className="col">{sentimentData?.totalChange}</div>
                 </div>
                 <hr />
                 <div className="row">
                     <div className="col"><b>Positive</b></div>
-                    <div className="col">{sentimentData.positiveMSPR}</div>
-                    <div className="col">{sentimentData.positiveChange}</div>
+                    <div className="col">{sentimentData?.positiveMSPR}</div>
+                    <div className="col">{sentimentData?.positiveChange}</div>
                 </div>
                 <hr />
                 <div className="row">
                     <div className="col"><b>Negative</b></div>
-                    <div className="col">{sentimentData.negativeMSPR}</div>
-                    <div className="col">{sentimentData.negativeChange}</div>
+                    <div className="col">{sentimentData?.negativeMSPR}</div>
+                    <div className="col">{sentimentData?.negativeChange}</div>
                 </div>
             </div>
-            {/* <div className="d-flex justify-content-evenly align-items-center mt-5">
-                <div className="recommendation col ml-1">
-                    <HighchartsReact
-                        highcharts = {Highcharts}
-                        options = {recommendationOptions}
-                    ></HighchartsReact>
-                </div>
-                <div className="earningspershare col mr-1">
-                    <HighchartsReact
-                        highcharts = {Highcharts}
-                        options = {earningsOptions}
-                    ></HighchartsReact>
-                </div>
-            </div> */}
             <div className="row justify-content-evenly align-items-center mt-5">
               <div className="recommendation col-lg-5 col-sm-10">
                 <HighchartsReact
@@ -202,7 +186,6 @@ const Insights = ({sentimentData, earningsData, recommendationData, stock}) => {
                 />
               </div>
             </div>
-
         </div>
     );
 }

@@ -39,7 +39,7 @@ console.log(stock)
   const handleBuy = async () => {
     try {
       const payload = {
-        symbol: stock.symbol,
+        symbol: stock.symbol.toUpperCase(),
         price: stock.latestPrice.c,
         name: stock.name,
         quantity: quantity

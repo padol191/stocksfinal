@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import App from './App';
 import WatchlistPage from './WatchlistPage';
 import 'react-toastify/dist/ReactToastify.css';
 import Search from './Search';
 import reportWebVitals from './reportWebVitals';
 import Footer from './components/Footer';
+import Home from './Home';
 import {
   useQuery,
   useMutation,
@@ -43,7 +44,10 @@ theme="light"
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
     <Routes>
+    <Route path="/" element={<Navigate to="/search/home" replace />} />
+
       <Route path="/search/*" element={<Search />}>
+        <Route path="home" element={<Home />}></Route>
         <Route path=":ticker" element={<Stock />}></Route>
       </Route>
       {/* <Route index path="/search/*" element={<Stock />}></Route> */}

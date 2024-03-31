@@ -5,10 +5,9 @@ import "react-toastify/dist/ReactToastify.css";
 const SellModal = ({ show, onHide, stock, triggerAlert }) => {
   const modalRef = useRef(null);
   const [balance, setBalance] = useState(null);
-  const [quantity, setQuantity] = useState(0); // Initial quantity value
+  const [quantity, setQuantity] = useState(0);
 
   const handleAlert = (message) => {
-    // Call the function passed from the parent component to trigger the alert
     triggerAlert(message);
   };
 
@@ -54,14 +53,8 @@ const SellModal = ({ show, onHide, stock, triggerAlert }) => {
         toast.error('Failed to sell stock');
         throw new Error('Failed to sell stock');
       }
-
-      // Display success toast
-      
-      // Close the modal after successful sale
       onHide();
       handleAlert('Stock sold successfully')
-
-      // Update portfolio data
     } catch (error) {
       console.error('Error selling stock:', error);
     }
@@ -113,7 +106,7 @@ const SellModal = ({ show, onHide, stock, triggerAlert }) => {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={handleSell} // Call handleSell function on button click
+                  onClick={handleSell}
                 >
                   Sell
                 </button>
