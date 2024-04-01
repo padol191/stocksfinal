@@ -114,8 +114,10 @@ console.log(stock)
               <div className="modal-footer">
                 <button
                   type="button"
-                  className="btn btn-primary"
-                  onClick={handleBuy} // Call handleBuy function on button click
+                  // className="btn btn-primary"
+                  className={`btn ${ balance < stock.latestPrice.c * quantity ? 'btn-disabled' : 'btn-primary'}`}
+                  onClick={handleBuy} 
+                  disabled={balance < stock.latestPrice.c * quantity}
                 >
                   Buy
                 </button>

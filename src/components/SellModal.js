@@ -2,14 +2,22 @@ import React, { useEffect, useRef, useState } from 'react';
 import { toast} from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
+async function fetchPortfolioData() {
+  const response = await fetch('http://localhost:5000/portfolio');
+  return response.json();
+}
+
 const SellModal = ({ show, onHide, stock, triggerAlert }) => {
   const modalRef = useRef(null);
   const [balance, setBalance] = useState(null);
   const [quantity, setQuantity] = useState(0);
+  const [heldQuantity, setHeldQuantity] = useState(0);
 
   const handleAlert = (message) => {
     triggerAlert(message);
   };
+
+  console.log('Stock', stock)
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -19,14 +27,19 @@ const SellModal = ({ show, onHide, stock, triggerAlert }) => {
           throw new Error('Failed to fetch balance');
         }
         const data = await response.json();
-        setBalance(data.balance);
+        setBalance(data?.balance);
+        
       } catch (error) {
         console.error('Error fetching balance:', error);
       }
+
+      const pd = await fetchPortfolioData()
+      const foundStock = await pd.find(s => s?.symbol === stock?.symbol);
+      setHeldQuantity(foundStock?.quantity)
     };
 
     fetchBalance();
-  }, []);
+  }, [stock]);
 
   const handleQuantityChange = (event) => {
     setQuantity(event.target.value);
@@ -35,9 +48,9 @@ const SellModal = ({ show, onHide, stock, triggerAlert }) => {
   const handleSell = async () => {
     try {
       const payload = {
-        symbol: stock.symbol,
-        price: stock.latestPrice.c,
-        name: stock.name,
+        symbol: stock?.symbol,
+        price: stock?.latestPrice.c,
+        name: stock?.name,
         quantity: quantity
       };
 
@@ -60,6 +73,8 @@ const SellModal = ({ show, onHide, stock, triggerAlert }) => {
     }
   };
 
+  console.log(heldQuantity)
+
   return (
     <>
       {show && (
@@ -73,7 +88,7 @@ const SellModal = ({ show, onHide, stock, triggerAlert }) => {
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">{stock.name}</h5>
+                <h5 className="modal-title">{stock?.name}</h5>
                 <button
                   type="button"
                   className="close"
@@ -85,8 +100,8 @@ const SellModal = ({ show, onHide, stock, triggerAlert }) => {
                 </button>
               </div>
               <div className="modal-body">
-                <p>Current Price: {stock.latestPrice.c}</p>
-                <p>Quantity: {stock.quantity}</p>
+                <p>Current Price: {stock?.latestPrice?.c}</p>
+                <p>Quantity: {heldQuantity}</p>
                 <div className="form-group">
                   <label htmlFor="quantity">Quantity:</label>
                   <input
@@ -97,7 +112,7 @@ const SellModal = ({ show, onHide, stock, triggerAlert }) => {
                     onChange={handleQuantityChange}
                   />
                 </div>
-                {stock.quantity < quantity && (
+                {parseInt(heldQuantity) < quantity && (
                   <p>Not enough stocks in portfolio!</p>
                 )}
                 <p>Total: {stock.latestPrice.c * quantity}</p>
@@ -105,8 +120,9 @@ const SellModal = ({ show, onHide, stock, triggerAlert }) => {
               <div className="modal-footer">
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className={`btn ${parseInt(heldQuantity) < quantity ? 'btn-disabled' : 'btn-primary'}`}
                   onClick={handleSell}
+                  disabled={parseInt(heldQuantity) < quantity }
                 >
                   Sell
                 </button>
