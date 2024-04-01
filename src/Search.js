@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faClose } from '@fortawesome/free-solid-svg-icons';
 import { Outlet } from 'react-router-dom';
+import LoadingSpinner from './components/LoadingSpinner'
 // import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 export default function Search() {
@@ -28,6 +29,7 @@ export default function Search() {
 
   const fetchSuggestions = async (value) => {
     try {
+      setIsLoading(true);
       const response = await fetch(`http://localhost:5000/autocomplete/${value}`);
       if (response.ok) {
         const data = await response.json();
@@ -98,16 +100,16 @@ export default function Search() {
             </div>
           </div>
           {/* Suggestions dropdown */}
-          <ul className="list-group mt-2" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+          <ul className="list-group mt-2 overflow-auto" style={{ maxHeight: isLoading ? '50px' : '200px', scrollbarWidth: 'none' }}>
             {isLoading && (
-              <li className="list-group-item text-center">
-
+              <li className="position-relative top-0 list-group-item text-center">
+                <LoadingSpinner />
               </li>
             )}
             {!isLoading &&
               suggestions.length > 0 &&
               suggestions.map((item, index) => (
-                <li key={index} className="list-group-item" onClick={() => handleItemClick(item)}>
+                <li key={index} className="list-group-item" onClick={() => handleItemClick(item)} style={{cursor: 'pointer'}}>
                   {item.symbol} | {item.description}
                 </li>
               ))}

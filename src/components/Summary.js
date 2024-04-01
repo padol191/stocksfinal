@@ -12,6 +12,11 @@ const options = {
   chart: {
       type: 'line'
   },
+  plotOptions: {
+    line: {
+        color: latestPriceData.dp > 0 ? 'green' : 'red'
+    }
+  },
   title: {
       text: 'Hourly Stock Price Data'
   },
