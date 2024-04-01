@@ -15,7 +15,8 @@ export default function Search() {
   const handleSubmit = useCallback(() => {
     console.log('Ticker', ticker);
     if (ticker !== '') {
-      router(`/search/${localStorage.getItem('stock')}`);
+      // router(`/search/${localStorage.getItem('stock')}`);
+      router(`/search/${ticker}`)
     }
   }, [ticker, router]);
 

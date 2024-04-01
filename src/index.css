@@ -18,6 +18,12 @@ code {
   }
 }
 
-button:hover {
-  background-color: none !important;
+.btn:hover {
+  color: inherit !important;
+  background-color: inherit !important;
+  box-shadow: none !important;
+}
+
+.active {
+  border: 1px solid white !important;
 }

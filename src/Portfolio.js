@@ -86,7 +86,7 @@ const PortfolioPage = () => {
         </div>
       )}
       <h3>My Portfolio</h3>
-      <h5>Money in Wallet: {balance?.balance}</h5>
+      <h5>Money in Wallet: ${balance?.balance}</h5>
           {portfolioData.map((stock, index) => (
       <div key={index} className="row justify-content-center mb-3">
         <div className="row border" style={{ backgroundColor: 'whitesmoke' }}>

@@ -72,11 +72,11 @@ app.get('/historicData/:ticker', async (req, res) => {
 
   const endDate = new Date();
   const startDate = new Date(endDate);
-  startDate.setDate(endDate.getDate() - 181);
+  startDate.setDate(endDate.getDate() - 366);
   const endDateUnix = endDate.getTime();
   const startDateUnix = startDate.getTime();
 
-  axios.get(`https://api.polygon.io/v2/aggs/ticker/${stock}/range/1/hour/${startDateUnix}/${endDateUnix}?adjusted=true&sort=asc&apiKey=${POLYGON}`)
+  axios.get(`https://api.polygon.io/v2/aggs/ticker/${stock}/range/1/day/${startDateUnix}/${endDateUnix}?adjusted=true&sort=asc&apiKey=${POLYGON}`)
     .then(response => {
       console.log(response.data);
       // res.json(response.data);
@@ -197,7 +197,13 @@ app.get('/autocomplete/:ticker', async (req, res) => {
   axios.get(`https://finnhub.io/api/v1/search?q=${stock}&token=${FINNHUB}`)
     .then(response => {
       console.log(response.data);
-      res.json(response.data);
+      let regex = /^[a-zA-Z]+$/;
+      let result = []
+      for(let obj of response.data.result) {
+        if(regex.test(obj.symbol))
+        result.push(obj)
+      }
+      res.json({result: result});
     })
     .catch(error => {
       console.error('Error:', error.message);
@@ -571,18 +577,13 @@ app.get('/portfolio', async (req, res) => {
 app.post('/buy', async (req, res) => {
   try {
       const { symbol, name, quantity, price } = req.body;
-
-      // Check if the user has enough balance to buy the stocks
       const user = await User.findOne();
       const totalPrice = parseFloat(quantity) * parseFloat(price);
       if (parseFloat(user.balance) < totalPrice) {
           return res.status(400).json({ error: 'Insufficient balance' });
       }
-
-      // Check if the user already has the stock in the portfolio
       const existingStock = await Portfolio.findOne({ symbol });
       if (existingStock) {
-          // Calculate new average price per share and update quantity
           const totalValue = parseFloat(existingStock.average) * parseFloat(existingStock.quantity);
           const newTotalValue = totalValue + totalPrice;
           const newQuantity = parseFloat(existingStock.quantity) + parseFloat(quantity);
@@ -591,7 +592,6 @@ app.post('/buy', async (req, res) => {
           existingStock.average = newAveragePrice.toString();
           await existingStock.save();
       } else {
-          // Create a new entry in the portfolio
           await Portfolio.create({
               symbol,
               name,
@@ -599,8 +599,6 @@ app.post('/buy', async (req, res) => {
               average: price
           });
       }
-
-      // Deduct the total price from user's balance
       user.balance = (parseFloat(user.balance) - totalPrice).toString();
       await user.save();
 
@@ -614,14 +612,10 @@ app.post('/buy', async (req, res) => {
 app.post('/sell', async (req, res) => {
   try {
       const { symbol, quantity, price } = req.body;
-
-      // Find the stock in the portfolio
       const existingStock = await Portfolio.findOne({ symbol });
       if (!existingStock) {
           return res.status(400).json({ error: 'Stock not found in portfolio' });
       }
-
-      // Check if the user has enough quantity to sell
       if (parseFloat(existingStock.quantity) < parseFloat(quantity)) {
           return res.status(400).json({ error: 'Insufficient quantity to sell' });
       }
@@ -629,36 +623,25 @@ app.post('/sell', async (req, res) => {
       const existingQuantity = existingStock.quantity
       const existingAverage = existingStock.average
       const existingVal = parseFloat(existingQuantity)*parseFloat(existingAverage)
-
-      // Calculate total price from selling the stocks
       const totalPrice = parseFloat(quantity) * parseFloat(price);
 
-      // Update user's balance and stock quantity in portfolio
       const user = await User.findOne();
       user.balance = (parseFloat(user.balance) + totalPrice).toString();
       existingStock.quantity = (parseFloat(existingStock.quantity) - parseFloat(quantity)).toString();
-
-      // Update average price per share
       const remainingQuantity = parseFloat(existingStock.quantity);
       if (remainingQuantity === 0) {
           existingStock.average = '0'; // If all shares are sold, reset average to 0
       } else {
-          // Calculate new average price per share based on remaining shares
           const remainingValue = Math.abs(existingVal - totalPrice)
           const newAveragePrice = remainingValue / remainingQuantity;
           existingStock.average = newAveragePrice.toFixed(2).toString();
       }
-
-      // If all stocks of a symbol are sold, remove it from portfolio
       if (parseFloat(existingStock.quantity) === 0) {
           await existingStock.deleteOne()
       } else {
           await existingStock.save();
       }
-
-      // Save updated user and portfolio
       await user.save();
-
       res.status(200).json({ message: 'Stock sold successfully' });
   } catch (error) {
       console.error('Error selling stock:', error);

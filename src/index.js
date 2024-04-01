@@ -40,12 +40,11 @@ draggable
 pauseOnHover
 theme="light"
 />
-    <CustomNavbar />
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
+    <CustomNavbar />
     <Routes>
     <Route path="/" element={<Navigate to="/search/home" replace />} />
-
       <Route path="/search/*" element={<Search />}>
         <Route path="home" element={<Home />}></Route>
         <Route path=":ticker" element={<Stock />}></Route>

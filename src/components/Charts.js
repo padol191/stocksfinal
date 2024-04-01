@@ -270,7 +270,7 @@ const Charts = ({chartsData, stock}) => {
 const options = {
     chart: {
         height: 700,
-        width: 1300,
+        // width: 1300,
         backgroundColor: '#F8F8F8',
         events: {
             load: function () {
@@ -288,7 +288,8 @@ const options = {
           }
     },
     rangeSelector: {
-        selected: 2,
+        enabled: true,
+        selected: 0,
         inputEnabled: true,
         allButtonsEnabled: true,
         buttons: [{
@@ -348,6 +349,10 @@ const options = {
         offset: 0,
         lineWidth: 2
     }],
+    xAxis: {
+        type: 'datetime',
+        tickInterval: 24 * 3600 * 1000,
+    },
     tooltip: {
         split: true
     },
