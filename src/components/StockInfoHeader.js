@@ -49,12 +49,14 @@ async function marketOpen(lastPriceUpdate) {
 
 
 const StockInfoHeader = ({data, watchlistData, priceData}) => {
+
   const router = useNavigate()
   const {ticker} = useParams()
   const [alertMessage, setAlertMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [portfolioData, setPortfolioData] = useState([]);
   const [showSellButton, setShowSellButton] = useState(false)
+
   const handleAlert = (message) => {
     setAlertMessage(message);
     setShowAlert(true);
@@ -63,11 +65,13 @@ const StockInfoHeader = ({data, watchlistData, priceData}) => {
       setShowAlert(false);
     }, 3000);
   };
+
   console.log('Data', data)
   let arraydata = [data]
   console.log(arraydata)
-  // console.log('stock', stock)
+
   console.log('watchlist', watchlistData)
+
   const [ready, setReady] = useState(false)
   const [stocktochange,setstockchange] = useState()
   const [showModal, setShowModal] = useState(false);
@@ -77,10 +81,9 @@ const StockInfoHeader = ({data, watchlistData, priceData}) => {
   const [showsellModal, setShowsellModal] = useState(false);
   const handleShowsellModal = () => setShowsellModal(true);
   const handleHidesellModal = () => setShowsellModal(false);
-  // const [latestPrice, setLatestPrice] = useState()
   const [isMarketOpen, setIsMarketOpen] = useState({})
   const [isStockInWatchlist, setIsStockInWatchlist] = useState(false)
-const[filteredData,setfilteredData] = useState()
+  const[filteredData,setfilteredData] = useState()
 
   const handleWatchlistToggle = async (name, symbol) => {
     try {
@@ -88,7 +91,6 @@ const[filteredData,setfilteredData] = useState()
       let response;
       if (isStockInWatchlist) {
         const payload1 = { symbol: symbol };
-        // Remove the stock from the watchlist
         response = await fetch('http://localhost:5000/removeFromWatchlist', {
           method: 'POST',
           headers: {
@@ -98,7 +100,6 @@ const[filteredData,setfilteredData] = useState()
         });
       } else {
         const payload2 = { symbol: symbol, name: name };
-        // Add the stock to the watchlist
         response = await fetch('http://localhost:5000/addToWatchlist', {
           method: 'POST',
           headers: {
@@ -109,7 +110,6 @@ const[filteredData,setfilteredData] = useState()
       }
   
       if (response.ok) {
-        // Update the state based on the API response
         setIsStockInWatchlist(!isStockInWatchlist);
       } else {
         console.error('Failed to update watchlist:', response.statusText);
@@ -122,7 +122,6 @@ const[filteredData,setfilteredData] = useState()
   useEffect(() => {
       const fetchData = async () => {
       const latestPriceData = await fetchLatestPrice(data.ticker)
-      // setLatestPrice(latestPriceData)
       const isMarketOpenData = await marketOpen(latestPriceData.t)
       setIsMarketOpen(isMarketOpenData)
       const isStock = await watchlistData.some(data => data.symbol === ticker);
@@ -131,6 +130,7 @@ const[filteredData,setfilteredData] = useState()
       const updatedPortfolioData = await fetchPrices(portfolioData);
       setPortfolioData(updatedPortfolioData);
       const filteredData = portfolioData.filter(item => item.symbol === ticker);
+      console.log('filteredData', filteredData)
       setfilteredData({
         symbol: ticker,
         latestPrice:{
@@ -140,13 +140,14 @@ const[filteredData,setfilteredData] = useState()
       ,
       balance: 200
       })
-      if(filteredData) {
+      if(filteredData.length > 0) {
         setShowSellButton(true)
       }
       setReady(true)
     }
     fetchData()
   }, [watchlistData])
+
 
   useEffect(() => {
 
